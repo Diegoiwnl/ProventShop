@@ -6,22 +6,25 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import logging
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-db_config = {
-    'host': os.getenv('DB_HOST', 'localhost'),
-    'user': os.getenv('DB_USER', 'root'),
-    'password': os.getenv('DB_PASSWORD', ''),
-    'database': os.getenv('DB_NAME', 'koppa')
-}
-
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.secret_key = '08400840'
 
-app.config['WerkzeugSecurityHashMethod'] = 'sha256'
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="Agenda2024"
+)
 
-db = mysql.connector.connect(**db_config)
+cursor = db.cursor()
+
+
+def encripcontra(password):
+    # Generar un hash de la contraseña
+    encriptar = generate_password_hash(password)
+    return encriptar
 
 class Usuario:
     def __init__(self, id, nombrecli, email):
